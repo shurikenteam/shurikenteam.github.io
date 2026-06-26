@@ -1,2 +1,2 @@
 # shurikenteam.github.io
-Shuriken Team website
+The official Shuriken Team website
