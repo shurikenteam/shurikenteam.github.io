@@ -7,8 +7,8 @@
     body {
       margin: 0;
       display: flex;
-      justify-content: center;
-      align-items: flex-start;
+      flex-direction: column;
+      align-items: center;
       min-height: 100vh;
       padding-top: 40px;
       background: repeating-linear-gradient(
@@ -18,12 +18,44 @@
         #FDB3DD 20px,
         #FDB3DD 40px
       );
+      font-family: Arial, sans-serif;
     }
 
     img {
       width: 500px;
       height: auto;
       display: block;
+      margin-bottom: 30px;
+    }
+
+    .game-box {
+      width: 420px;
+      background: white;
+      border-radius: 20px;
+      padding: 25px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .game-box h2 {
+      margin-top: 0;
+      color: #333;
+    }
+
+    .view-btn {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 10px 20px;
+      background: #FD7AC0;
+      color: white;
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+
+    .view-btn:hover {
+      background: #f25cab;
     }
   </style>
 
@@ -31,6 +63,13 @@
 <body>
 
   <img src="shurikenlogo.png" alt="Shuriken Team">
+
+  <div class="game-box">
+    <h2>Sakura Super Mario Bros.</h2>
+    <a class="view-btn" href="https://shurikenteam.github.io/sakura">
+      View More
+    </a>
+  </div>
 
 </body>
 </html>
