@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sakura SMB</title>
 
   <style>
@@ -22,26 +24,39 @@
 
     .game-box {
       width: 550px;
-      min-height: 220px;
       background: white;
       border-radius: 25px;
       padding: 35px;
       text-align: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
 
     .game-logo {
-      width: auto;
-      height: 120px;
       display: block;
+      height: 120px;
+      width: auto;
       margin: 0 auto 20px;
     }
 
     .game-box h2 {
-      margin-top: 0;
-      margin-bottom: 35px;
+      margin: 0 0 35px;
       color: #333;
       font-size: 34px;
+    }
+
+    .screenshots {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 35px;
+    }
+
+    .screenshots img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 719 / 448;
+      object-fit: cover;
+      border-radius: 12px;
     }
 
     .download-btn {
@@ -51,8 +66,8 @@
       color: white;
       text-decoration: none;
       border-radius: 15px;
-      font-weight: bold;
       font-size: 34px;
+      font-weight: bold;
       transition: background 0.2s;
     }
 
@@ -60,13 +75,21 @@
       background: #f25cab;
     }
   </style>
-
 </head>
 <body>
 
   <div class="game-box">
     <img class="game-logo" src="logo.png" alt="Sakura Super Mario Bros. Logo">
+
     <h2>Sakura Super Mario Bros.</h2>
+
+    <div class="screenshots">
+      <img src="1.png" alt="Screenshot 1">
+      <img src="2.png" alt="Screenshot 2">
+      <img src="3.png" alt="Screenshot 3">
+      <img src="4.png" alt="Screenshot 4">
+    </div>
+
     <a class="download-btn" href="https://drive.usercontent.google.com/download?id=1Jv7nj8wASEkLWe9Mx6CWgc92zsJfyF13&export=download">
       Download Demo
     </a>
