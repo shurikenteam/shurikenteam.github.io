@@ -1,3 +1,68 @@
-Sakura Super Mario Bros.
-Download the demo here:
-https://drive.google.com/file/d/1Jv7nj8wASEkLWe9Mx6CWgc92zsJfyF13/view
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sakura SMB</title>
+
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: repeating-linear-gradient(
+        -45deg,
+        #FD7AC0 0px,
+        #FD7AC0 20px,
+        #FDB3DD 20px,
+        #FDB3DD 40px
+      );
+      font-family: Arial, sans-serif;
+    }
+
+    .game-box {
+      width: 550px;
+      min-height: 220px;
+      background: white;
+      border-radius: 25px;
+      padding: 35px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .game-box h2 {
+      margin-top: 0;
+      margin-bottom: 35px;
+      color: #333;
+      font-size: 34px;
+    }
+
+    .download-btn {
+      display: inline-block;
+      padding: 18px 36px;
+      background: #FD7AC0;
+      color: white;
+      text-decoration: none;
+      border-radius: 15px;
+      font-weight: bold;
+      font-size: 22px;
+      transition: background 0.2s;
+    }
+
+    .download-btn:hover {
+      background: #f25cab;
+    }
+  </style>
+
+</head>
+<body>
+
+  <div class="game-box">
+    <h2>Sakura Super Mario Bros.</h2>
+    <a class="download-btn" href="https://drive.google.com/file/d/1Jv7nj8wASEkLWe9Mx6CWgc92zsJfyF13/view">
+      Download Demo
+    </a>
+  </div>
+
+</body>
+</html>
