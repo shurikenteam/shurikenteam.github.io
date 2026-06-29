@@ -18,19 +18,17 @@ html{
 
 body{
     font-family:Arial,sans-serif;
-    perspective:300px;
-    transform-style:preserve-3d;
     overflow-x:hidden;
     background:#FD7AC0;
 }
 
-.parallax-bg{
+.background{
     position:fixed;
-    top:-50%;
-    left:-50%;
+    top:0;
+    left:0;
     width:200%;
-    height:200%;
-    z-index:-2;
+    height:100%;
+    z-index:-1;
     background:
         repeating-linear-gradient(
             -45deg,
@@ -39,8 +37,16 @@ body{
             #FDB3DD 20px,
             #FDB3DD 40px
         );
-    transform:translateZ(-1000px) scale(4.5);
-    will-change:transform;
+    animation:moveBackground 20s linear infinite;
+}
+
+@keyframes moveBackground{
+    from{
+        transform:translateX(0);
+    }
+    to{
+        transform:translateX(-50%);
+    }
 }
 
 .content{
@@ -50,7 +56,6 @@ body{
     align-items:center;
     min-height:100vh;
     padding-top:5px;
-    transform-style:preserve-3d;
 }
 
 .logo{
@@ -131,7 +136,7 @@ body{
 </head>
 <body>
 
-<div class="parallax-bg"></div>
+<div class="background"></div>
 
 <div class="content">
 
