@@ -4,12 +4,34 @@
   <title>Sakura SMB</title>
 
   <style>
-    body {
+    * {
       margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      overflow-x: hidden;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      overflow-x: hidden;
+      background: #FD7AC0;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
+      padding: 40px 0;
+    }
+
+    .background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 200%;
+      height: 100%;
+      z-index: -1;
       background: repeating-linear-gradient(
         -45deg,
         #FD7AC0 0px,
@@ -17,7 +39,16 @@
         #FDB3DD 20px,
         #FDB3DD 40px
       );
-      font-family: Arial, sans-serif;
+      animation: moveBackground 20s linear infinite;
+    }
+
+    @keyframes moveBackground {
+      from {
+        transform: translateX(0);
+      }
+      to {
+        transform: translateX(-50%);
+      }
     }
 
     .game-box {
@@ -27,7 +58,9 @@
       border-radius: 30px;
       padding: 45px;
       text-align: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      box-shadow: 0 8px 24px rgba(0,0,0,.25);
+      position: relative;
+      z-index: 1;
     }
 
     .game-logo {
@@ -38,7 +71,6 @@
     }
 
     .game-box h2 {
-      margin-top: 0;
       margin-bottom: 30px;
       color: #333;
       font-size: 46px;
@@ -75,16 +107,46 @@
       border-radius: 18px;
       font-weight: bold;
       font-size: 42px;
-      transition: background 0.2s;
+      transition: background .2s;
     }
 
     .download-btn:hover {
       background: #f25cab;
     }
+
+    @media (max-width: 900px) {
+      .game-box {
+        width: 95%;
+        padding: 20px;
+      }
+
+      .game-logo {
+        width: 90%;
+        height: auto;
+      }
+
+      .game-box h2 {
+        font-size: 34px;
+      }
+
+      .game-description {
+        font-size: 20px;
+      }
+
+      .download-btn {
+        font-size: 28px;
+      }
+
+      .screenshots {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 
 </head>
 <body>
+
+  <div class="background"></div>
 
   <div class="game-box">
     <img class="game-logo" src="logo.png" alt="Sakura Super Mario Bros. Logo">
