@@ -1,1 +1,173 @@
-coming soon
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Mini GP</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      overflow-x: hidden;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      overflow-x: hidden;
+      background: #737373;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 80px 0;
+    }
+
+    .background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 200%;
+      height: 100%;
+      z-index: -1;
+      background: repeating-linear-gradient(
+        -45deg,
+        #737373 0px,
+        #737373 20px,
+        #4A4A4A 20px,
+        #4A4A4A 40px
+      );
+      animation: moveBackground 20s linear infinite;
+    }
+
+    @keyframes moveBackground {
+      from {
+        transform: translateX(0);
+      }
+      to {
+        transform: translateX(-50%);
+      }
+    }
+
+    .game-box {
+      width: 800px;
+      min-height: 320px;
+      background: white;
+      border-radius: 30px;
+      padding: 45px;
+      text-align: center;
+      box-shadow: 0 8px 24px rgba(0,0,0,.25);
+      position: relative;
+      z-index: 1;
+    }
+
+    .game-logo {
+      width: auto;
+      height: 170px;
+      display: block;
+      margin: 0 auto 30px;
+    }
+
+    .game-box h2 {
+      margin-bottom: 30px;
+      color: #333;
+      font-size: 46px;
+    }
+
+    .game-description {
+      margin: 0 auto 40px;
+      max-width: 680px;
+      color: #444;
+      font-size: 24px;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    .screenshots {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 45px;
+    }
+
+    .screenshots img {
+      width: 100%;
+      display: block;
+      border-radius: 16px;
+    }
+
+    .download-btn {
+      display: inline-block;
+      padding: 14px 28px;
+      background: #4A4A4A;
+      color: white;
+      text-decoration: none;
+      border-radius: 18px;
+      font-weight: bold;
+      font-size: 42px;
+      transition: background .2s;
+    }
+
+    .download-btn:hover {
+      background: #737373;
+    }
+
+    @media (max-width: 900px) {
+      .game-box {
+        width: 95%;
+        padding: 20px;
+      }
+
+      .game-logo {
+        width: 90%;
+        height: auto;
+      }
+
+      .game-box h2 {
+        font-size: 34px;
+      }
+
+      .game-description {
+        font-size: 20px;
+      }
+
+      .download-btn {
+        font-size: 28px;
+      }
+
+      .screenshots {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+</head>
+<body>
+
+  <div class="background"></div>
+
+  <div class="game-box">
+    <img class="game-logo" src="logo.png" alt="Sakura Super Mario Bros. Logo">
+
+    <h2>Mario Kart Mini GP</h2>
+
+    <p class="game-description">
+      Sakura Super Mario Bros. DS is a complete overhaul of New Super Mario Bros. Featuring numerous new enemies, 80+ levels, never-before-seen themes, and a completely original soundtrack! The mod features an item shop system and native currency (Shuriken Coins) that you can collect in the levels. The mod also includes a completely original playable character, completely new world maps, and more!
+    </p>
+
+    <div class="screenshots">
+      <img src="1.png" alt="Screenshot 1">
+      <img src="2.png" alt="Screenshot 2">
+      <img src="3.png" alt="Screenshot 3">
+      <img src="4.png" alt="Screenshot 4">
+    </div>
+
+    <a class="download-btn" href="https://drive.usercontent.google.com/download?id=1L_3KkUBgLISaKb4rGKvbDiDs6AY5WVkW&export=download&authuser=0">
+      Download
+    </a>
+  </div>
+
+</body>
+</html>
