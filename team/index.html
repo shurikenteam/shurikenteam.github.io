@@ -1,1 +1,341 @@
-coming soon
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Team</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    caret-color: transparent;
+}
+
+body{
+    font-family:Arial, sans-serif;
+    background:#FD7AC0;
+    display:flex;
+    justify-content:center;
+    padding:120px 0;
+    overflow-x:hidden;
+}
+
+/* Background */
+.background{
+    position:fixed;
+    inset:0;
+    width:200%;
+    height:100%;
+    z-index:-1;
+    background: repeating-linear-gradient(
+        -45deg,
+        #FD7AC0 0px,
+        #FD7AC0 20px,
+        #FDB3DD 20px,
+        #FDB3DD 40px
+    );
+    animation: moveBg 20s linear infinite;
+}
+
+@keyframes moveBg{
+    from{ transform:translateX(0); }
+    to{ transform:translateX(-50%); }
+}
+
+/* Layout */
+.container{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+}
+
+/* Card */
+.box{
+    width:340px;
+    background:white;
+    border-radius:18px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.15);
+    overflow:hidden;
+    cursor:pointer;
+}
+
+/* Header */
+.header{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:14px 18px;
+}
+
+.arrow{
+    font-size:28px;
+    transition:transform 0.25s ease;
+}
+
+.box.open .arrow{
+    transform:rotate(90deg);
+}
+
+.title{
+    font-size:28px;
+    font-weight:bold;
+}
+
+/* Content (smooth auto expand) */
+.content{
+    display:grid;
+    grid-template-rows:0fr;
+    transition:grid-template-rows 0.35s ease;
+}
+
+.inner{
+    overflow:hidden;
+    padding:0 18px;
+}
+
+.box.open .content{
+    grid-template-rows:1fr;
+}
+
+.box.open .inner{
+    padding-bottom:14px;
+}
+
+/* Items */
+.item{
+    font-size:20px;
+    margin-top:8px;
+    opacity:0;
+    transform:translateY(-6px);
+    transition:all 0.25s ease;
+}
+
+.box.open .item{
+    opacity:1;
+    transform:translateY(0);
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="background"></div>
+
+<div class="container">
+
+    <!-- Adam -->
+    <div class="box">
+        <div class="header">
+            <div class="arrow">›</div>
+            <div class="title">Adam</div>
+        </div>
+        <div class="content">
+            <div class="inner">
+                <div class="item">Website</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JPG64 -->
+    <div class="box">
+        <div class="header">
+            <div class="arrow">›</div>
+            <div class="title">JPG64</div>
+        </div>
+        <div class="content">
+            <div class="inner">
+                <div class="item">Level designer</div>
+                <div class="item">Character design</div>
+                <div class="item">3D modeller</div>
+                <div class="item">Worldmap help</div>
+                <div class="item">Animation help</div>
+                <div class="item">Graphic designer</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- IllyPuppy -->
+    <div class="box">
+        <div class="header">
+            <div class="arrow">›</div>
+            <div class="title">IllyPuppy</div>
+        </div>
+        <div class="content">
+            <div class="inner">
+                <div class="item">Programming</div>
+                <div class="item">Level design</div>
+                <div class="item">SSMB engine helper</div>
+                <div class="item">Graphic designer</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Kourtiss -->
+    <div class="box">
+        <div class="header">
+            <div class="arrow">›</div>
+            <div class="title">Kourtiss</div>
+        </div>
+        <div class="content">
+            <div class="inner">
+                <div class="item">Music composer</div>
+                <div class="item">SFX composer</div>
+                <div class="item">Sound quality tester</div>
+                <div class="item">Misc help</div>
+                <div class="item">Sample help</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- WillSmith2 -->
+    <div class="box">
+        <div class="header">
+            <div class="arrow">›</div>
+            <div class="title">WillSmith2</div>
+        </div>
+        <div class="content">
+            <div class="inner">
+                <div class="item">Programming</div>
+                <div class="item">Reverse engineering</div>
+                <div class="item">Worldmap help</div>
+                <div class="item">SSMB engine helper</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MarioRRT -->
+    <div class="box">
+        <div class="header">
+            <div class="arrow">›</div>
+            <div class="title">MarioRRT</div>
+        </div>
+        <div class="content">
+            <div class="inner">
+                <div class="item">Level designer</div>
+                <div class="item">Idea support</div>
+                <div class="item">Lore creator</div>
+                <div class="item">Character designer</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AmaraArmada -->
+    <div class="box">
+        <div class="header">
+            <div class="arrow">›</div>
+            <div class="title">AmaraArmada</div>
+        </div>
+        <div class="content">
+            <div class="inner">
+                <div class="item">Graphic designer</div>
+                <div class="item">Level designer</div>
+                <div class="item">Music composer</div>
+                <div class="item">Misc help</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dump -->
+    <div class="box">
+        <div class="header">
+            <div class="arrow">›</div>
+            <div class="title">Dump</div>
+        </div>
+        <div class="content">
+            <div class="inner">
+                <div class="item">Level designer</div>
+                <div class="item">Graphic designer</div>
+                <div class="item">3D modeller</div>
+                <div class="item">Misc help</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MarioAndLuigiFan -->
+    <div class="box">
+        <div class="header">
+            <div class="arrow">›</div>
+            <div class="title">MarioAndLuigiFan</div>
+        </div>
+        <div class="content">
+            <div class="inner">
+                <div class="item">Level designer</div>
+                <div class="item">Graphic designer</div>
+                <div class="item">Misc help</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Archipelago -->
+    <div class="box">
+        <div class="header">
+            <div class="arrow">›</div>
+            <div class="title">Archipelago</div>
+        </div>
+        <div class="content">
+            <div class="inner">
+                <div class="item">Level designer</div>
+                <div class="item">Graphic designer</div>
+                <div class="item">Misc help</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mone -->
+    <div class="box">
+        <div class="header">
+            <div class="arrow">›</div>
+            <div class="title">Mone</div>
+        </div>
+        <div class="content">
+            <div class="inner">
+                <div class="item">Level designer</div>
+                <div class="item">Graphic designer</div>
+                <div class="item">Misc help</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Redacc -->
+    <div class="box">
+        <div class="header">
+            <div class="arrow">›</div>
+            <div class="title">Redacc</div>
+        </div>
+        <div class="content">
+            <div class="inner">
+                <div class="item">Level designer</div>
+                <div class="item">Misc help</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Robplays -->
+    <div class="box">
+        <div class="header">
+            <div class="arrow">›</div>
+            <div class="title">Robplays</div>
+        </div>
+        <div class="content">
+            <div class="inner">
+                <div class="item">Bug tester</div>
+                <div class="item">General tester</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+document.querySelectorAll(".box").forEach(box => {
+    box.addEventListener("click", () => {
+        box.classList.toggle("open");
+    });
+});
+</script>
+
+</body>
+</html>
