@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Mini GP</title>
+  <title>Mario Kart Mini GP</title>
+
+  <script src="libpatch.js"></script>
 
   <style>
     * {
@@ -10,19 +12,15 @@
       box-sizing: border-box;
     }
 
-    html {
-      overflow-x: hidden;
-    }
-
     body {
       font-family: Arial, sans-serif;
-      overflow-x: hidden;
       background: #4A4A4A;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
       padding: 80px 0;
+      color: #333;
     }
 
     .background {
@@ -43,131 +41,198 @@
     }
 
     @keyframes moveBackground {
-      from {
-        transform: translateX(0);
-      }
-      to {
-        transform: translateX(-50%);
-      }
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
     }
 
     .game-box {
       width: 800px;
-      min-height: 320px;
       background: white;
       border-radius: 30px;
       padding: 45px;
       text-align: center;
       box-shadow: 0 8px 24px rgba(0,0,0,.25);
       position: relative;
-      z-index: 1;
     }
 
     .game-logo {
-      width: auto;
       height: 170px;
-      display: block;
-      margin: 0 auto 30px;
+      margin-bottom: 20px;
     }
 
-    .game-box h2 {
-      margin-bottom: 30px;
-      color: #333;
-      font-size: 46px;
+    h2 {
+      font-size: 42px;
+      margin-bottom: 10px;
     }
 
-    .game-description {
-      margin: 0 auto 40px;
-      max-width: 680px;
+    .desc {
+      font-size: 20px;
+      margin-bottom: 25px;
       color: #444;
-      font-size: 24px;
-      line-height: 1.6;
-      text-align: center;
+    }
+
+    .rom-note {
+      color: #b00000;
+      font-weight: bold;
+      margin: 10px 0 20px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 16px 30px;
+      background: #4A4A4A;
+      color: white;
+      border-radius: 18px;
+      font-size: 34px;
+      cursor: pointer;
+      border: none;
+      transition: 0.2s;
+    }
+
+    .btn:hover {
+      background: #737373;
+    }
+
+    input[type="file"] {
+      margin-top: 10px;
+    }
+
+    .progress {
+      height: 6px;
+      background: #ddd;
+      margin-top: 20px;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+
+    #bar {
+      height: 100%;
+      width: 0%;
+      background: #00c3ff;
+      transition: width 0.2s;
     }
 
     .screenshots {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-bottom: 45px;
+      gap: 10px;
+      margin-top: 30px;
     }
 
     .screenshots img {
       width: 100%;
-      display: block;
-      border-radius: 16px;
-    }
-
-    .download-btn {
-      display: inline-block;
-      padding: 14px 28px;
-      background: #4A4A4A;
-      color: white;
-      text-decoration: none;
-      border-radius: 18px;
-      font-weight: bold;
-      font-size: 42px;
-      transition: background .2s;
-    }
-
-    .download-btn:hover {
-      background: #737373;
+      border-radius: 12px;
     }
 
     @media (max-width: 900px) {
-      .game-box {
-        width: 95%;
-        padding: 20px;
-      }
-
-      .game-logo {
-        width: 90%;
-        height: auto;
-      }
-
-      .game-box h2 {
-        font-size: 34px;
-      }
-
-      .game-description {
-        font-size: 20px;
-      }
-
-      .download-btn {
-        font-size: 28px;
-      }
-
-      .screenshots {
-        grid-template-columns: 1fr;
-      }
+      .game-box { width: 95%; }
+      .screenshots { grid-template-columns: 1fr; }
     }
   </style>
-
 </head>
+
 <body>
 
-  <div class="background"></div>
+<div class="background"></div>
 
-  <div class="game-box">
-    <img class="game-logo" src="logo.png" alt="Sakura Super Mario Bros. Logo">
+<div class="game-box">
 
-    <h2>Mario Kart Mini GP</h2>
+  <img class="game-logo" src="logo.png">
 
-    <p class="game-description">
-       Mario Kart Mini Grand Prix, as the name suggests, is a small mod for Mario Kart DS. This mod contains 4 new original tracks and 4 retro tracks originating from the Super Circuit. The mod also includes 3D models for the kart shells, 4 new characters, 1 character never before seen in any Mario Kart mod, and several new karts. The mod also features two new items: the Thundercloud and the P Wing.
-    </p>
+  <h2>Mario Kart Mini GP</h2>
 
-    <div class="screenshots">
-      <img src="1.png" alt="Screenshot 1">
-      <img src="2.png" alt="Screenshot 2">
-      <img src="3.png" alt="Screenshot 3">
-      <img src="4.png" alt="Screenshot 4">
-    </div>
-
-    <a class="download-btn" href="https://drive.usercontent.google.com/download?id=1L_3KkUBgLISaKb4rGKvbDiDs6AY5WVkW&export=download&authuser=0">
-      Download
-    </a>
+  <div class="desc">
+    Patch your clean European Mario Kart DS ROM to play this mod.
   </div>
+
+  <div class="rom-note">
+    European ROM only!
+  </div>
+
+  <input type="file" id="rom" accept=".nds">
+
+  <br><br>
+
+  <button class="btn" id="patchBtn" disabled>Patch Now</button>
+
+  <div class="progress">
+    <div id="bar"></div>
+  </div>
+
+  <div class="screenshots">
+    <img src="1.png">
+    <img src="2.png">
+    <img src="3.png">
+    <img src="4.png">
+  </div>
+
+</div>
+
+<script>
+let romData = null;
+let patchData = null;
+
+const romInput = document.getElementById("rom");
+const btn = document.getElementById("patchBtn");
+const bar = document.getElementById("bar");
+
+// Load patch automatically
+fetch("game.xdelta")
+  .then(r => r.arrayBuffer())
+  .then(data => {
+    patchData = data;
+    updateState();
+  })
+  .catch(() => alert("Failed to load game.xdelta"));
+
+romInput.addEventListener("change", e => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    romData = reader.result;
+    updateState();
+  };
+  reader.readAsArrayBuffer(file);
+});
+
+function updateState() {
+  btn.disabled = !(romData && patchData);
+}
+
+btn.onclick = () => {
+  btn.disabled = true;
+
+  applyPatchAsync(romData, patchData, {
+    ignoreChecksums: false,
+
+    onprogress: (p) => {
+      bar.style.width = (p * 100) + "%";
+    },
+
+    onerror: (err) => {
+      alert("Error: " + err);
+      btn.disabled = false;
+    },
+
+    onpatchend: (out) => {
+      bar.style.width = "0%";
+      btn.disabled = false;
+
+      const blob = new Blob([out], {type: "application/octet-stream"});
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "Mario Kart Mini GP.nds";
+      a.click();
+
+      URL.revokeObjectURL(url);
+    }
+  });
+};
+</script>
 
 </body>
 </html>
