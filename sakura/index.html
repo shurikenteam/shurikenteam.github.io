@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Sakura SMB</title>
 
   <style>
@@ -31,7 +32,7 @@
       left: 0;
       width: 200%;
       height: 100%;
-      z-index: -1;
+      z-index: -3;
       background: repeating-linear-gradient(
         -45deg,
         #FDB3DD 0px,
@@ -40,6 +41,67 @@
         #FD7AC0 40px
       );
       animation: moveBackground 20s linear infinite;
+    }
+
+    .petal {
+      position: fixed;
+      background-color: rgba(255, 255, 255, 0.8);
+      border-radius: 150% 0 150% 0;
+      z-index: -1;
+      pointer-events: none;
+      top: -50px;
+      animation: naturalFall linear forwards;
+    }
+
+    @keyframes naturalFall {
+      0% {
+        transform: translateY(0vh) translateX(0) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.8;
+      }
+      90% {
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(110vh) translateX(150px) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    .top-white-gradient {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 30%;
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 0.5), transparent);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .bottom-black-gradient {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 30%;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.35), transparent);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .bloom-glow {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100vw;
+      height: 100vh;
+      background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+      z-index: -2;
+      pointer-events: none;
     }
 
     @keyframes moveBackground {
@@ -142,17 +204,17 @@
       }
     }
   </style>
-
 </head>
 <body>
 
   <div class="background"></div>
+  <div class="top-white-gradient"></div>
+  <div class="bottom-black-gradient"></div>
+  <div class="bloom-glow"></div>
 
   <div class="game-box">
     <img class="game-logo" src="logo.png" alt="Sakura Super Mario Bros. Logo">
-
     <h2>Sakura Super Mario Bros.</h2>
-
     <p class="game-description">
       Sakura Super Mario Bros. DS is a complete overhaul of New Super Mario Bros. Featuring numerous new enemies, 80+ levels, never-before-seen themes, and a completely original soundtrack! The mod features an item shop system and native currency (Shuriken Coins) that you can collect in the levels. The mod also includes a completely original playable character, completely new world maps, and more!
     </p>
@@ -169,5 +231,37 @@
     </a>
   </div>
 
+  <script>
+    function createPetal() {
+      const petal = document.createElement('div');
+      petal.classList.add('petal');
+
+      const size = Math.random() * 15 + 10 + 'px';
+      petal.style.width = size;
+      petal.style.height = size;
+
+      petal.style.left = Math.random() * 100 + 'vw';
+
+      const duration = Math.random() * 3 + 4 + 's';
+      petal.style.animationDuration = duration;
+
+      petal.addEventListener('animationend', () => {
+        petal.remove();
+      });
+
+      document.body.appendChild(petal);
+    }
+
+    const INITIAL_COUNT = 120;
+
+    for (let i = 0; i < INITIAL_COUNT; i++) {
+      setTimeout(createPetal, Math.random() * 5000);
+    }
+
+    setInterval(createPetal, 150);
+  </script>
+
+</body>
+</html>
 </body>
 </html>
