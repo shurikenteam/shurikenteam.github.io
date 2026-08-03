@@ -1500,7 +1500,7 @@
           audioCtx = new AC();
           analyser = audioCtx.createAnalyser();
           analyser.fftSize = 1024;
-          analyser.smoothingTimeConstant = 0.8;
+          analyser.smoothingTimeConstant = 0.55;
           analyser.minDecibels = -90;
           analyser.maxDecibels = -10;
           timeData = new Uint8Array(analyser.fftSize);
@@ -1634,7 +1634,7 @@
         const loud = levels.loud;
         for (let i = 0; i < BAR_COUNT; i++) {
           const ft = i / (BAR_COUNT - 1);
-          const idx = Math.min(bins - 1, Math.floor(Math.pow(ft, 0.6) * bins * 0.95));
+          const idx = Math.min(bins - 1, Math.floor(ft * bins * 0.95));
           let sum = 0, n = 0;
           for (let k = -2; k <= 2; k++) {
             const j = idx + k;
@@ -1642,15 +1642,20 @@
           }
           const freq = (sum / Math.max(1, n)) / 255;
 
-          const bassWeight = Math.max(0, 1 - ft) * 0.5;
-          const volumeWeight = 0.4;
-          const mixed = freq * 0.85 + loud * volumeWeight + bass * bassWeight;
-          const boosted = Math.min(1.05, Math.pow(Math.max(0, mixed), 0.75) * 1.35);
+          const bassWeight = Math.max(0, 1 - ft) * 0.9;
+          const volumeWeight = 0.5;
+          const mixed = freq * 1.15 + loud * volumeWeight + bass * bassWeight;
+          const boosted = Math.min(1.25, Math.pow(Math.max(0, mixed), 0.55) * 2.1);
 
-          
-          const env = 0.72 + 0.28 * Math.sin((i / (BAR_COUNT - 1)) * Math.PI);
-          const target = Math.max(3, boosted * h * 0.88 * env);
-          heights[i] += (target - heights[i]) * 0.28;
+          const env = 0.7 + 0.3 * Math.sin((i / (BAR_COUNT - 1)) * Math.PI);
+          const target = Math.max(3, boosted * h * 0.94 * env);
+
+          const prev = heights[i];
+          if (target > prev) {
+            heights[i] += (target - prev) * 0.55;
+          } else {
+            heights[i] += (target - prev) * 0.22;
+          }
         }
       }
 
