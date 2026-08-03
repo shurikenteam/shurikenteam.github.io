@@ -3,9 +3,121 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sakura SMB</title>
+  <title>Sakura Super Mario Bros. — Complete DS Overhaul</title>
+  <meta name="description" content="Sakura Super Mario Bros. DS is a complete overhaul of New Super Mario Bros. featuring 80+ levels, new enemies, original soundtrack, and a brand new playable character.">
 
   <style>
+    @font-face {
+      font-family: 'NSMB';
+      src: url('nsmb.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    :root {
+      --pink-primary: #FD7AC0;
+      --pink-light: #FDB3DD;
+      --pink-dark: #E85AA8;
+      --pink-glow: rgba(253, 122, 192, 0.4);
+      --text-dark: #2D1F2F;
+      --text-body: #4A3F4D;
+      --white: #FFFFFF;
+      --glass-bg: rgba(255, 255, 255, 0.85);
+      --glass-border: rgba(255, 255, 255, 0.5);
+      --bg-stripe-1: var(--pink-light);
+      --bg-stripe-2: var(--pink-primary);
+    }
+
+    
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --pink-primary: #3B1B47;
+        --pink-light: #251230;
+        --pink-dark: #FFB3E6;
+        --pink-glow: rgba(226, 128, 197, 0.4);
+        --text-dark: #FFFFFF;
+        --text-body: #E0D6E5;
+        --white: #FFFFFF;
+        --glass-bg: rgba(18, 14, 24, 0.85);
+        --glass-border: rgba(255, 255, 255, 0.12);
+        --bg-stripe-1: #1B0E23;
+        --bg-stripe-2: #2D183B;
+      }
+
+      nav.scrolled {
+        background: rgba(18, 14, 24, 0.95) !important;
+      }
+
+      nav.scrolled .nav-links a {
+        color: #FFFFFF !important;
+      }
+
+      nav.scrolled .nav-logo {
+        color: #FFB3E6 !important;
+      }
+
+      .badge {
+        background: linear-gradient(135deg, #321942, rgba(45, 24, 59, 0.8)) !important;
+        color: #FFB3E6 !important;
+        border-color: rgba(255, 179, 230, 0.3) !important;
+      }
+
+      .version-note, .file-info-item, .stats, .warning {
+        color: #B5A3C2 !important;
+      }
+
+      .download-btn {
+        background: linear-gradient(180deg, #E280C5 0%, #A24286 100%) !important;
+        color: #FFFFFF !important;
+      }
+
+      .download-btn:hover {
+        background: linear-gradient(180deg, #F39BD7 0%, #B84F99 100%) !important;
+      }
+
+      .manual-link {
+        color: #FFB3E6 !important;
+      }
+
+      .manual-link:hover {
+        color: #FFFFFF !important;
+        border-bottom-color: #FFFFFF !important;
+      }
+
+      .message {
+        background: rgba(255, 179, 230, 0.1) !important;
+        border-color: rgba(255, 179, 230, 0.3) !important;
+        color: #FFB3E6 !important;
+      }
+
+      .progress {
+        background: rgba(0, 0, 0, 0.5) !important;
+      }
+
+      .audio-player-card {
+        background: rgba(18, 14, 24, 0.85) !important;
+        border-color: rgba(255, 255, 255, 0.12) !important;
+      }
+
+      .audio-title {
+        color: #FFFFFF !important;
+      }
+
+      .audio-play-btn {
+        background: #FFB3E6 !important;
+        color: #120E18 !important;
+      }
+
+      .audio-play-btn:hover {
+        background: #FFFFFF !important;
+      }
+
+      .audio-visualizer {
+        background: rgba(255, 255, 255, 0.08) !important;
+      }
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -13,45 +125,685 @@
     }
 
     html {
+      scroll-behavior: smooth;
       overflow-x: hidden;
     }
 
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'NSMB', 'Segoe UI', Arial, sans-serif;
+      background: var(--bg-stripe-1);
+      color: var(--text-body);
       overflow-x: hidden;
-      background: #FD7AC0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 40px 16px;
+      line-height: 1.6;
     }
 
-    .background {
+    
+    .bg-pattern {
       position: fixed;
       top: 0;
       left: 0;
       width: 200%;
       height: 100%;
-      z-index: -3;
+      z-index: -4;
       background: repeating-linear-gradient(
         -45deg,
-        #FDB3DD 0px,
-        #FDB3DD 20px,
-        #FD7AC0 20px,
-        #FD7AC0 40px
+        var(--bg-stripe-1) 0px,
+        var(--bg-stripe-1) 20px,
+        var(--bg-stripe-2) 20px,
+        var(--bg-stripe-2) 40px
       );
-      animation: moveBackground 20s linear infinite;
+      animation: moveBackground 25s linear infinite;
     }
 
+    .bg-glow {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 120vw;
+      height: 120vh;
+      background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 60%);
+      z-index: -3;
+      pointer-events: none;
+    }
+
+    .top-gradient {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 25%;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.2), transparent);
+      z-index: -2;
+      pointer-events: none;
+    }
+
+    .bottom-gradient {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 25%;
+      background: linear-gradient(to top, rgba(0,0,0,0.35), transparent);
+      z-index: -2;
+      pointer-events: none;
+    }
+
+    @keyframes moveBackground {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 16px 24px;
+      z-index: 100;
+      background: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      transition: all 0.3s ease;
+    }
+
+    nav.scrolled {
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    nav.scrolled .nav-links a {
+      color: var(--text-dark);
+    }
+
+    nav.scrolled .nav-logo {
+      color: var(--pink-primary);
+    }
+
+    .nav-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-logo {
+      font-size: 22px;
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 600;
+      transition: all 0.3s;
+      position: relative;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--pink-dark);
+      transition: width 0.3s;
+      border-radius: 2px;
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 100px 20px 60px;
+      position: relative;
+    }
+
+    .hero-card {
+      width: 100%;
+      max-width: 850px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 32px;
+      padding: 50px 40px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.1) inset;
+      animation: floatUp 1s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(253,122,192,0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    @keyframes floatUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .game-logo {
+      width: auto;
+      max-width: 90%;
+      height: 180px;
+      display: block;
+      margin: 0 auto 24px;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
+      animation: pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+
+    .hero h1 {
+      font-size: 52px;
+      color: var(--text-dark);
+      margin-bottom: 16px;
+      line-height: 1.1;
+    }
+
+    .hero-subtitle {
+      font-size: 22px;
+      color: var(--pink-dark);
+      margin-bottom: 24px;
+      font-weight: 600;
+    }
+
+    .hero-description {
+      font-size: 18px;
+      color: var(--text-body);
+      max-width: 680px;
+      margin: 0 auto 36px;
+      line-height: 1.7;
+    }
+
+    .hero-badges {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 36px;
+    }
+
+    .badge {
+      background: linear-gradient(135deg, var(--pink-light), rgba(255,255,255,0.8));
+      color: var(--pink-dark);
+      padding: 8px 18px;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 700;
+      border: 1px solid rgba(253,122,192,0.3);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 18px 44px;
+      background: linear-gradient(180deg, #FFC1E3 0%, #FD83C3 100%);
+      color: #5C1D3E;
+      text-decoration: none;
+      border-radius: 24px;
+      font-weight: bold;
+      font-size: 28px;
+      box-shadow: 0 8px 24px var(--pink-glow), 0 0 0 4px rgba(255,255,255,0.2) inset;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .download-btn:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 12px 32px var(--pink-glow), 0 0 0 4px rgba(255,255,255,0.3) inset;
+    }
+
+    .download-btn:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    .download-btn svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    .version-note {
+      margin-top: 14px;
+      font-size: 13px;
+      color: #888;
+    }
+
+    
+    section {
+      position: relative;
+      z-index: 1;
+      padding: 80px 20px;
+    }
+
+    .section-container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      font-size: 42px;
+      color: white;
+      text-align: center;
+      margin-bottom: 16px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .section-subtitle {
+      text-align: center;
+      color: rgba(255,255,255,0.9);
+      font-size: 18px;
+      margin-bottom: 50px;
+    }
+
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+    }
+
+    .feature-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 32px 24px;
+      text-align: center;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .feature-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+      border-color: rgba(253,122,192,0.5);
+    }
+
+    .feature-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 16px;
+      background: linear-gradient(135deg, rgba(253,122,192,0.2), rgba(253,122,192,0.4));
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .feature-card h3 {
+      font-size: 22px;
+      color: var(--text-dark);
+      margin-bottom: 10px;
+    }
+
+    .feature-card p {
+      font-size: 15px;
+      color: var(--text-body);
+      line-height: 1.6;
+    }
+
+    
+    .screenshots-section {
+      background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.2), transparent);
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .gallery-item {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+      transition: all 0.4s ease;
+      opacity: 0;
+      transform: scale(0.95);
+    }
+
+    .gallery-item.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .gallery-item:hover {
+      transform: scale(1.03) translateY(-4px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.5s ease;
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.08);
+    }
+
+    .gallery-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s;
+    }
+
+    .gallery-item:hover .gallery-overlay {
+      background: rgba(0,0,0,0.5);
+    }
+
+    .gallery-overlay span {
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+    }
+
+    .gallery-item:hover .gallery-overlay span {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .lightbox.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .lightbox img {
+      max-width: 90%;
+      max-height: 85vh;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: 24px;
+      right: 32px;
+      color: white;
+      font-size: 40px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      line-height: 1;
+      transition: transform 0.2s;
+    }
+
+    .lightbox-close:hover {
+      transform: scale(1.1);
+    }
+
+    
+    .music-section {
+      padding: 40px 20px;
+    }
+
+    .audio-player-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 50px;
+      padding: 16px 28px;
+      max-width: 750px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .audio-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 130px;
+    }
+
+    .audio-icon {
+      font-size: 24px;
+    }
+
+    .audio-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-dark);
+      white-space: nowrap;
+    }
+
+    .audio-controls {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex: 1;
+    }
+
+    .audio-time {
+      font-size: 13px;
+      color: var(--text-body);
+      font-variant-numeric: tabular-nums;
+      min-width: 35px;
+    }
+
+    .audio-progress-bar {
+      flex: 1;
+      height: 8px;
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      position: relative;
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    .audio-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--pink-dark), var(--pink-primary));
+      border-radius: 10px;
+      transition: width 0.1s linear;
+    }
+
+    .audio-visualizer {
+      flex: 1;
+      height: 40px;
+      background: rgba(0, 0, 0, 0.08);
+      border-radius: 12px;
+      position: relative;
+      cursor: pointer;
+      overflow: hidden;
+      border: 1px solid rgba(253, 122, 192, 0.2);
+    }
+
+    .audio-visualizer canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      border-radius: 12px;
+    }
+
+    .audio-play-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--pink-dark);
+      color: white;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px var(--pink-glow);
+      transition: transform 0.2s ease, background 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .audio-play-btn:hover {
+      transform: scale(1.08);
+      background: var(--pink-primary);
+    }
+
+    .audio-play-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+
+    
+    .download-section {
+      text-align: center;
+    }
+
+    .download-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 32px;
+      padding: 60px 40px;
+      max-width: 700px;
+      margin: 0 auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    .download-card h2 {
+      font-size: 38px;
+      color: var(--text-dark);
+      margin-bottom: 12px;
+    }
+
+    .download-card p {
+      color: var(--text-body);
+      margin-bottom: 32px;
+      font-size: 17px;
+    }
+
+    .file-info {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+
+    .file-info-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #777;
+      font-size: 14px;
+    }
+
+    
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      color: rgba(255,255,255,0.8);
+      font-size: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    footer a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    
     .petal {
       position: fixed;
-      background-color: rgba(255, 255, 255, 0.8);
+      background-color: rgba(255, 255, 255, 0.85);
       border-radius: 150% 0 150% 0;
       z-index: -1;
       pointer-events: none;
       top: -50px;
       animation: naturalFall linear forwards;
+      box-shadow: 0 0 6px rgba(255,255,255,0.3);
     }
 
     @keyframes naturalFall {
@@ -59,223 +811,1080 @@
         transform: translateY(0vh) translateX(0) rotate(0deg);
         opacity: 0;
       }
-      10% {
-        opacity: 0.8;
-      }
-      90% {
-        opacity: 0.8;
-      }
+      8% { opacity: 0.9; }
+      92% { opacity: 0.9; }
       100% {
-        transform: translateY(110vh) translateX(150px) rotate(720deg);
+        transform: translateY(110vh) translateX(var(--sway)) rotate(var(--rotation));
         opacity: 0;
       }
     }
 
-    .top-white-gradient {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 30%;
-      background: linear-gradient(to bottom, rgba(255, 255, 255, 0.5), transparent);
-      z-index: 0;
-      pointer-events: none;
+    
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .bottom-black-gradient {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 30%;
-      background: linear-gradient(to top, rgba(0, 0, 0, 0.35), transparent);
-      z-index: 0;
-      pointer-events: none;
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
     }
 
-    .bloom-glow {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 100vw;
-      height: 100vh;
-      background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
-      z-index: -2;
-      pointer-events: none;
-    }
-
-    @keyframes moveBackground {
-      from {
-        transform: translateX(0);
+    
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
       }
-      to {
-        transform: translateX(-50%);
+
+      .mobile-menu-btn {
+        display: block;
+      }
+
+      .hero h1 {
+        font-size: 34px;
+      }
+
+      .hero-subtitle {
+        font-size: 18px;
+      }
+
+      .hero-description {
+        font-size: 16px;
+      }
+
+      .hero-card {
+        padding: 36px 24px;
+        border-radius: 24px;
+      }
+
+      .game-logo {
+        height: 130px;
+      }
+
+      .download-btn {
+        font-size: 22px;
+        padding: 16px 32px;
+        width: 100%;
+        justify-content: center;
+      }
+
+      .section-title {
+        font-size: 32px;
+      }
+
+      .gallery {
+        grid-template-columns: 1fr;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .download-card {
+        padding: 40px 24px;
+      }
+
+      .download-card h2 {
+        font-size: 28px;
+      }
+
+      .audio-player-card {
+        border-radius: 30px;
+        padding: 14px 20px;
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .audio-info {
+        min-width: auto;
+      }
+
+      .audio-controls {
+        width: 100%;
+        order: 3;
+      }
+
+      .audio-visualizer {
+        height: 36px;
       }
     }
 
-    .game-box {
-      width: 100%;
-      max-width: 800px;
-      background: white;
-      border-radius: 30px;
-      padding: 45px 30px;
-      text-align: center;
-      box-shadow: 0 8px 24px rgba(0,0,0,.25);
+    
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+      html {
+        scroll-behavior: auto;
+      }
+    }
+
+    
+    .patch-card {
+      margin-top: 32px;
       position: relative;
-      z-index: 1;
+      overflow: hidden;
     }
 
-    .game-logo {
-      width: auto;
-      max-width: 100%;
-      height: 170px;
-      display: block;
-      margin: 0 auto 30px;
-      object-fit: contain;
+    .patch-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(253,122,192,0.08) 0%, transparent 65%);
+      pointer-events: none;
     }
 
-    .game-box h2 {
-      margin-bottom: 30px;
-      color: #333;
-      font-size: 46px;
+    .patch-card > * { position: relative; }
+
+    .patch-btn {
+      position: relative;
+      cursor: pointer;
     }
 
-    .game-description {
-      margin: 0 auto 40px;
-      max-width: 680px;
-      color: #444;
-      font-size: 20px;
-      line-height: 1.6;
+    .patch-btn .spinner {
+      width: 22px;
+      height: 22px;
+      border: 2.5px solid rgba(255,255,255,0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 700ms linear infinite;
+      display: none;
+    }
+
+    .patch-btn[data-state="patching"] .spinner,
+    .patch-btn[data-state="reading"] .spinner {
+      display: inline-block;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .warning {
+      margin-top: 14px;
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #888;
+      font-weight: 600;
+    }
+
+    .warning::before {
+      content: "◆";
+      color: var(--pink-dark);
+      margin-right: 8px;
+      font-size: 10px;
+      vertical-align: middle;
+    }
+
+    .manual-link {
+      display: inline-block;
+      margin-top: 14px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--pink-dark);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s ease, color 0.2s ease;
+    }
+
+    .manual-link:hover {
+      color: var(--pink-primary);
+      border-bottom-color: var(--pink-primary);
+    }
+
+    .manual-link:focus-visible {
+      outline: 2px solid var(--pink-dark);
+      outline-offset: 4px;
+      border-radius: 2px;
+    }
+
+    
+    .banner {
+      display: none;
+      margin: 0 auto 20px;
+      padding: 12px 16px;
+      max-width: 520px;
+      background: rgba(255, 59, 92, 0.08);
+      border: 1px solid rgba(255, 59, 92, 0.35);
+      border-radius: 10px;
+      color: #c9304d;
+      font-size: 14px;
       text-align: center;
     }
 
-    .screenshots {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
-      margin-bottom: 45px;
-    }
+    .banner[data-visible="true"] { display: block; }
 
-    .screenshots img {
+    
+    .status {
       width: 100%;
-      height: auto;
-      display: block;
-      border-radius: 16px;
+      max-width: 520px;
+      margin: 24px auto 0;
+      opacity: 0;
+      transition: opacity 200ms ease;
     }
-.download-btn {
-  display: inline-block;
-  padding: 16px 38px;
-  background: linear-gradient(180deg, #FFC1E3 0%, #FD83C3 100%);
-  color: #5C1D3E;
-  text-decoration: none;
-  border-radius: 20px;
-  font-weight: bold;
-  font-size: 32px;
-  box-shadow: 0 6px 18px rgba(253, 122, 192, 0.35);
-  transition: all 0.3s ease;
-}
 
-.download-btn:hover {
-  background: linear-gradient(180deg, #FFE0F0 0%, #FDB3DD 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 22px rgba(253, 122, 192, 0.5);
-}
+    .status[data-state]:not([data-state="idle"]) { opacity: 1; }
 
-.download-btn:active {
-  transform: translateY(0);
-}
+    .progress {
+      position: relative;
+      height: 10px;
+      background: rgba(0,0,0,0.18);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 999px;
+      overflow: hidden;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+    }
 
-@media (max-width: 768px) {
-  .game-box {
-    padding: 30px 20px;
-    border-radius: 20px;
-  }
+    #bar {
+      position: relative;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--pink-dark) 0%, var(--pink-primary) 50%, var(--pink-light) 100%);
+      box-shadow: 0 0 12px var(--pink-glow);
+      transition: width 250ms ease-out;
+      overflow: hidden;
+    }
 
-  .game-logo {
-    height: 120px;
-    margin-bottom: 20px;
-  }
+    #bar::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.5) 50%, transparent 100%);
+      transform: translateX(-100%);
+      animation: shimmer 1.4s linear infinite;
+    }
 
-  .game-box h2 {
-    font-size: 32px;
-    margin-bottom: 20px;
-  }
+    .status[data-state="success"] #bar {
+      background: linear-gradient(90deg, #E85AA8 0%, #FDB3DD 100%);
+      box-shadow: 0 0 12px rgba(253, 179, 221, 0.6);
+    }
 
-  .game-description {
-    font-size: 16px;
-    margin-bottom: 30px;
-  }
+    .status[data-state="error"] #bar {
+      background: linear-gradient(90deg, #c9304d 0%, #ff5e75 100%);
+      box-shadow: 0 0 12px rgba(255, 94, 117, 0.45);
+    }
 
-  .screenshots {
-    grid-template-columns: 1fr;
-    gap: 12px;
-    margin-bottom: 30px;
-  }
+    .status[data-state="success"] #bar::after,
+    .status[data-state="error"] #bar::after,
+    .status[data-state="idle"] #bar::after {
+      animation: none;
+      opacity: 0;
+    }
 
-  .download-btn {
-    display: block;
-    width: 100%;
-    font-size: 22px;
-    padding: 14px 20px;
-  }
-}
+    @keyframes shimmer {
+      0%   { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+      font-size: 12px;
+      letter-spacing: 0.02em;
+      color: #888;
+      font-variant-numeric: tabular-nums;
+      gap: 8px;
+    }
+
+    .stats .stage {
+      color: var(--text-body);
+      font-weight: 500;
+      flex: 1;
+      text-align: left;
+      min-width: 0;
+    }
+
+    .stats .pct {
+      color: var(--pink-dark);
+      font-weight: 700;
+      min-width: 40px;
+      text-align: right;
+    }
+
+    .stats .eta {
+      font-size: 11px;
+      opacity: 0.85;
+      min-width: 70px;
+      text-align: center;
+    }
+
+    .status[data-state="success"] .stats .pct { color: var(--pink-dark); }
+    .status[data-state="error"] .stats .pct { color: #c9304d; }
+
+    .message {
+      margin-top: 10px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      text-align: center;
+      background: rgba(253, 122, 192, 0.1);
+      border: 1px solid rgba(253, 122, 192, 0.35);
+      color: var(--pink-dark);
+    }
+
+    .status[data-state="error"] .message {
+      background: rgba(255, 59, 92, 0.08);
+      border-color: rgba(255, 59, 92, 0.3);
+      color: #c9304d;
+    }
+
+    @media (max-width: 768px) {
+      .patch-card { padding: 36px 22px; }
+      .stats { font-size: 11px; }
+      .stats .stage { font-size: 11px; }
+    }
   </style>
+
+  <script src="libpatch.js"></script>
 </head>
 <body>
 
-  <div class="background"></div>
-  <div class="top-white-gradient"></div>
-  <div class="bottom-black-gradient"></div>
-  <div class="bloom-glow"></div>
+  <div class="bg-pattern"></div>
+  <div class="bg-glow"></div>
+  <div class="top-gradient"></div>
+  <div class="bottom-gradient"></div>
 
-  <div class="game-box">
-    <img class="game-logo" src="logo.png" alt="Sakura Super Mario Bros. Logo">
-    <h2>Sakura Super Mario Bros.</h2>
-    <p class="game-description">
-      Sakura Super Mario Bros. DS is a complete overhaul of New Super Mario Bros. Featuring numerous new enemies, 80+ levels, never-before-seen themes, and a completely original soundtrack! The mod features an item shop system and native currency (Shuriken Coins) that you can collect in the levels. The mod also includes a completely original playable character, completely new world maps, and more!
-    </p>
-
-    <div class="screenshots">
-      <img src="1.png" alt="Screenshot 1">
-      <img src="2.png" alt="Screenshot 2">
-      <img src="3.png" alt="Screenshot 3">
-      <img src="4.png" alt="Screenshot 4">
+  <nav id="navbar">
+    <div class="nav-container">
+      <a href="#" class="nav-logo">🌸 Sakura SMB</a>
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#screenshots">Screenshots</a></li>
+        <li><a href="#download">Download</a></li>
+        <li><a href="#patch">Patch</a></li>
+      </ul>
+      <button class="mobile-menu-btn" aria-label="Menu">☰</button>
     </div>
+  </nav>
 
-    <a class="download-btn" href="https://drive.usercontent.google.com/download?id=1Jv7nj8wASEkLWe9Mx6CWgc92zsJfyF13&export=download">
-      Download Demo
-    </a>
+  <section class="hero">
+    <div class="hero-card">
+      <img class="game-logo" src="logo.png" alt="Sakura Super Mario Bros. Logo">
+      <h1>Sakura Super Mario Bros.</h1>
+      <p class="hero-subtitle">A Complete New Super Mario Bros. DS Overhaul</p>
+      <p class="hero-description">
+        Experience a reimagined adventure with 80+ handcrafted levels, never-before-seen themes,
+        an original soundtrack, and a brand new playable character. Collect Shuriken Coins,
+        explore new world maps, and battle unique enemies in this full-scale mod.
+      </p>
+      <div class="hero-badges"></div>
+      <a class="download-btn" href="#download">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        Patch Game
+      </a>
+      <p class="version-note">v1.0 Demo &bull; 367 MB &bull; Requires NSMB DS ROM</p>
+    </div>
+  </section>
+
+  <section id="features">
+    <div class="section-container">
+      <h2 class="section-title reveal">What's New</h2>
+      <p class="section-subtitle reveal">Everything you love about NSMB, reimagined from the ground up.</p>
+
+      <div class="features-grid">
+        <div class="feature-card reveal">
+          <div class="feature-icon">🗺️</div>
+          <h3>80+ New Levels</h3>
+          <p>Handcrafted stages across completely new world maps with fresh challenges and secrets to discover.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">🎵</div>
+          <h3>Original Soundtrack</h3>
+          <p>A completely original score that brings the sakura theme to life with every note.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">🦹</div>
+          <h3>New Enemies</h3>
+          <p>Face off against unique adversaries never seen before in the Mario universe.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">🪙</div>
+          <h3>Shuriken Coins</h3>
+          <p>Collect the native currency throughout levels to spend in the brand new item shop system.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">👤</div>
+          <h3>Playable Character</h3>
+          <p>Take control of a completely original character with unique abilities and animations.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">🎨</div>
+          <h3>Fresh Themes</h3>
+          <p>Explore never-before-seen visual themes that transform the classic NSMB aesthetic.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="screenshots" class="screenshots-section">
+    <div class="section-container">
+      <h2 class="section-title reveal">Screenshots</h2>
+      <p class="section-subtitle reveal">See the sakura transformation in action.</p>
+
+      <div class="gallery">
+        <div class="gallery-item reveal" onclick="openLightbox('1.png')">
+          <img src="1.png" alt="Gameplay Screenshot 1">
+          <div class="gallery-overlay"><span>Click to Enlarge</span></div>
+        </div>
+        <div class="gallery-item reveal" onclick="openLightbox('2.png')">
+          <img src="2.png" alt="Gameplay Screenshot 2">
+          <div class="gallery-overlay"><span>Click to Enlarge</span></div>
+        </div>
+        <div class="gallery-item reveal" onclick="openLightbox('3.png')">
+          <img src="3.png" alt="Gameplay Screenshot 3">
+          <div class="gallery-overlay"><span>Click to Enlarge</span></div>
+        </div>
+        <div class="gallery-item reveal" onclick="openLightbox('4.png')">
+          <img src="4.png" alt="Gameplay Screenshot 4">
+          <div class="gallery-overlay"><span>Click to Enlarge</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+    <img id="lightbox-img" src="" alt="Enlarged screenshot">
   </div>
 
+  <section class="music-section">
+    <div class="section-container">
+      <div class="audio-player-card reveal">
+        <div class="audio-info">
+          <span class="audio-icon">🎵</span>
+          <span class="audio-title">Galoomba Brow</span>
+        </div>
+        <div class="audio-controls">
+          <span class="audio-time" id="audioCurrentTime">0:00</span>
+          <div class="audio-visualizer" id="audioVisualizer" title="Click to seek">
+            <canvas id="visualizerCanvas"></canvas>
+          </div>
+          <span class="audio-time" id="audioDuration">0:00</span>
+        </div>
+        <button class="audio-play-btn" id="audioPlayBtn" aria-label="Play Galoomba Brow track">
+          <svg id="playIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          <svg id="pauseIcon" viewBox="0 0 24 24" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+        </button>
+        <audio id="audioElement" src="music/Galoomba Brow.mp3" preload="metadata"></audio>
+      </div>
+    </div>
+  </section>
+
+  <section id="download" class="download-section">
+    <div class="section-container">
+      <div class="download-card patch-card reveal" id="patch">
+        <h2>Patch Your ROM</h2>
+        <p>The patcher runs entirely in your browser — your file is never uploaded — and the patched ROM downloads automatically when it's done. Make sure you have a clean USA New Super Mario Bros. DS ROM.</p>
+
+        <div class="banner" id="banner" role="alert">
+          ⚠ Patch data failed to load. Please refresh the page to try again.
+        </div>
+
+        <button class="download-btn patch-btn" id="patchBtn" data-state="idle" type="button">
+          <span class="spinner" aria-hidden="true"></span>
+          <span class="label">⚡ Patch Game</span>
+        </button>
+
+        <div class="warning">USA ROM only</div>
+
+        <a class="manual-link" href="https://drive.usercontent.google.com/download?id=1Jv7nj8wASEkLWe9Mx6CWgc92zsJfyF13&export=download">
+          Manual download
+        </a>
+
+        <input type="file" id="rom" accept=".nds" style="display:none;">
+
+        <div class="status" id="status" data-state="idle" role="status" aria-live="polite">
+          <div class="progress">
+            <div id="bar"></div>
+          </div>
+          <div class="stats">
+            <span class="stage" id="stage">Select your USA New Super Mario Bros. DS ROM to begin</span>
+            <span class="eta" id="eta"></span>
+            <span class="pct" id="pct">0%</span>
+          </div>
+          <div class="message" id="message" hidden></div>
+        </div>
+
+        <div class="file-info">
+          <span class="file-info-item">📦 v1.0</span>
+          <span class="file-info-item">💾 367 MB</span>
+          <span class="file-info-item">🇺🇸 USA ROM required</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>Sakura Super Mario Bros. is a fan modification. Not affiliated with Nintendo.</p>
+    <p style="margin-top: 8px;">Made with 💗 by the Sakura SMB Team</p>
+  </footer>
+
   <script>
+    
     function createPetal() {
       const petal = document.createElement('div');
       petal.classList.add('petal');
 
-      const size = Math.random() * 15 + 10 + 'px';
-      petal.style.width = size;
-      petal.style.height = size;
-
+      const size = Math.random() * 14 + 8;
+      petal.style.width = size + 'px';
+      petal.style.height = size + 'px';
       petal.style.left = Math.random() * 100 + 'vw';
 
-      const duration = Math.random() * 3 + 4 + 's';
-      petal.style.animationDuration = duration;
+      
+      const duration = Math.random() * 4 + 5;
+      const sway = (Math.random() - 0.5) * 300;
+      const rotation = Math.random() * 1080 + 360;
 
-      petal.addEventListener('animationend', () => {
-        petal.remove();
-      });
+      petal.style.setProperty('--sway', sway + 'px');
+      petal.style.setProperty('--rotation', rotation + 'deg');
+      petal.style.animationDuration = duration + 's';
+      petal.style.opacity = Math.random() * 0.4 + 0.4;
 
+      petal.addEventListener('animationend', () => petal.remove());
       document.body.appendChild(petal);
     }
 
-    const INITIAL_COUNT = 120;
+    
+    for (let i = 0; i < 80; i++) {
+      setTimeout(createPetal, Math.random() * 6000);
+    }
+    setInterval(createPetal, 200);
 
-    for (let i = 0; i < INITIAL_COUNT; i++) {
-      setTimeout(createPetal, Math.random() * 5000);
+    
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    
+    const revealElements = document.querySelectorAll('.reveal, .feature-card, .gallery-item');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+
+    revealElements.forEach(el => revealObserver.observe(el));
+
+    
+    function openLightbox(src) {
+      const lightbox = document.getElementById('lightbox');
+      const img = document.getElementById('lightbox-img');
+      img.src = src;
+      lightbox.classList.add('active');
+      document.body.style.overflow = 'hidden';
     }
 
-    setInterval(createPetal, 150);
+    function closeLightbox() {
+      const lightbox = document.getElementById('lightbox');
+      lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeLightbox();
+    });
+
+    
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          const offset = 80;
+          const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
+      });
+    });
+
+    
+    (() => {
+      const audio = document.getElementById('audioElement');
+      const playBtn = document.getElementById('audioPlayBtn');
+      const playIcon = document.getElementById('playIcon');
+      const pauseIcon = document.getElementById('pauseIcon');
+      const currentTimeEl = document.getElementById('audioCurrentTime');
+      const durationEl = document.getElementById('audioDuration');
+      const visualizerEl = document.getElementById('audioVisualizer');
+      const canvas = document.getElementById('visualizerCanvas');
+
+      if (!audio || !playBtn) return;
+      if (!audio.getAttribute('src')) audio.src = 'music/Galoomba Brow.mp3';
+
+      let audioCtx = null;
+      let analyser = null;
+      let timeData = null;
+      let freqData = null;
+      let hasLevels = false;
+      let levelTried = false;
+
+      const BAR_COUNT = 42;
+      const BAR_GAP = 2;
+      const heights = new Array(BAR_COUNT).fill(4);
+      const phases = new Array(BAR_COUNT).fill(0).map(() => Math.random() * Math.PI * 2);
+      const speeds = new Array(BAR_COUNT).fill(0).map(() => 1 + Math.random() * 1.5);
+
+      function formatAudioTime(seconds) {
+        const m = Math.floor(seconds / 60) || 0;
+        const s = Math.floor(seconds % 60) || 0;
+        return m + ':' + (s < 10 ? '0' : '') + s;
+      }
+
+      playBtn.addEventListener('click', async () => {
+        if (audio.paused) {
+          try {
+            
+            
+            tryAttachLevels();
+            if (audioCtx && audioCtx.state === 'suspended') {
+              await audioCtx.resume().catch(() => {});
+            }
+            await audio.play();
+            playIcon.style.display = 'none';
+            pauseIcon.style.display = 'block';
+          } catch (err) {
+            console.error('Play failed:', err);
+          }
+        } else {
+          audio.pause();
+          playIcon.style.display = 'block';
+          pauseIcon.style.display = 'none';
+        }
+      });
+
+      audio.addEventListener('loadedmetadata', () => {
+        durationEl.textContent = formatAudioTime(audio.duration);
+      });
+      audio.addEventListener('timeupdate', () => {
+        currentTimeEl.textContent = formatAudioTime(audio.currentTime);
+      });
+      audio.addEventListener('ended', () => {
+        playIcon.style.display = 'block';
+        pauseIcon.style.display = 'none';
+        currentTimeEl.textContent = '0:00';
+      });
+      audio.addEventListener('play', () => {
+        playIcon.style.display = 'none';
+        pauseIcon.style.display = 'block';
+      });
+      audio.addEventListener('pause', () => {
+        playIcon.style.display = 'block';
+        pauseIcon.style.display = 'none';
+      });
+
+      function tryAttachLevels() {
+        if (levelTried) return;
+        levelTried = true;
+        try {
+          const AC = window.AudioContext || window.webkitAudioContext;
+          if (!AC) return;
+
+          audioCtx = new AC();
+          analyser = audioCtx.createAnalyser();
+          analyser.fftSize = 1024;
+          analyser.smoothingTimeConstant = 0.65;
+          analyser.minDecibels = -90;
+          analyser.maxDecibels = -10;
+          timeData = new Uint8Array(analyser.fftSize);
+          freqData = new Uint8Array(analyser.frequencyBinCount);
+
+          
+          
+          
+          const src = audioCtx.createMediaElementSource(audio);
+          src.connect(analyser);
+          analyser.connect(audioCtx.destination);
+          hasLevels = true;
+        } catch (err) {
+          console.warn('Levels unavailable:', err);
+          hasLevels = false;
+        }
+      }
+
+      function readLevels() {
+        if (!analyser || !timeData || !freqData) return null;
+        analyser.getByteTimeDomainData(timeData);
+        analyser.getByteFrequencyData(freqData);
+
+        
+        let sum = 0;
+        for (let i = 0; i < timeData.length; i++) {
+          const v = (timeData[i] - 128) / 128;
+          sum += v * v;
+        }
+        const loud = Math.min(1, Math.sqrt(sum / timeData.length) * 2.6);
+
+        
+        let total = 0, peak = 0;
+        for (let i = 0; i < freqData.length; i++) {
+          total += freqData[i];
+          if (freqData[i] > peak) peak = freqData[i];
+        }
+        const avg = total / freqData.length;
+
+        
+        const bassEnd = Math.floor(freqData.length * 0.12);
+        let bassSum = 0;
+        for (let i = 0; i < bassEnd; i++) bassSum += freqData[i];
+        const bass = bassSum / (bassEnd * 255);
+
+        return { loud: loud, peak: peak / 255, avg: avg / 255, bass: bass, freq: freqData };
+      }
+
+      if (!canvas || !visualizerEl) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      function resize() {
+        const rect = visualizerEl.getBoundingClientRect();
+        if (rect.width < 2 || rect.height < 2) return;
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = Math.floor(rect.width * dpr);
+        canvas.height = Math.floor(rect.height * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      function theme() {
+        const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        return dark
+          ? {
+              top: '#FFE0F4',
+              mid: '#FFB3E6',
+              bot: '#C95BA8',
+              idleTop: 'rgba(255,224,244,0.45)',
+              idleBot: 'rgba(201,91,168,0.25)',
+              prog: 'rgba(255,179,230,0.14)'
+            }
+          : {
+              top: '#FFD6EF',
+              mid: '#FD7AC0',
+              bot: '#C23A86',
+              idleTop: 'rgba(253,179,221,0.45)',
+              idleBot: 'rgba(194,58,134,0.22)',
+              prog: 'rgba(253,122,192,0.14)'
+            };
+      }
+
+      function fillBar(x, y, w, h, r) {
+        r = Math.min(r || 2, w / 2, h / 2);
+        if (h <= 0 || w <= 0) return;
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.arcTo(x + w, y, x + w, y + h, r);
+        ctx.arcTo(x + w, y + h, x, y + h, r);
+        ctx.arcTo(x, y + h, x, y, r);
+        ctx.arcTo(x, y, x + w, y, r);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      function drawProcedural(playing, h, t) {
+        for (let i = 0; i < BAR_COUNT; i++) {
+          let target;
+          if (playing) {
+            const w1 = Math.abs(Math.sin(t * speeds[i] * 2.5 + phases[i]));
+            const w2 = Math.abs(Math.sin(t * speeds[i] * 4.0 + phases[i] * 1.3));
+            const env = 0.45 + 0.55 * Math.sin((i / (BAR_COUNT - 1)) * Math.PI);
+            target = (6 + (w1 * 0.6 + w2 * 0.4) * h * 0.75) * env;
+          } else {
+            target = 5 + Math.sin(t * 1.1 + phases[i]) * 3.5;
+          }
+          heights[i] += (target - heights[i]) * (playing ? 0.25 : 0.1);
+        }
+      }
+
+      function drawFromLevels(levels, h) {
+        const bins = levels.freq.length;
+        const bass = levels.bass;     
+        const loud = levels.loud;     
+        for (let i = 0; i < BAR_COUNT; i++) {
+          
+          
+          const ft = i / (BAR_COUNT - 1);
+          const idx = Math.min(bins - 1, Math.floor(Math.pow(ft, 0.55) * bins * 0.95));
+          let sum = 0, n = 0;
+          for (let k = -2; k <= 2; k++) {
+            const j = idx + k;
+            if (j >= 0 && j < bins) { sum += levels.freq[j]; n++; }
+          }
+          const freq = (sum / Math.max(1, n)) / 255;
+
+          
+          
+          
+          const bassWeight = Math.max(0, 1 - ft) * 0.7;
+          const volumeWeight = 0.55;
+          const mixed = freq * 0.9 + loud * volumeWeight + bass * bassWeight;
+          const boosted = Math.min(1.15, Math.pow(Math.max(0, mixed), 0.55) * 1.9);
+
+          
+          
+          const env = 0.65 + 0.35 * Math.sin((i / (BAR_COUNT - 1)) * Math.PI);
+          const target = Math.max(3, boosted * h * 0.92 * env);
+          heights[i] += (target - heights[i]) * 0.45;
+        }
+      }
+
+      function draw() {
+        const w = visualizerEl.clientWidth;
+        const h = visualizerEl.clientHeight;
+        if (w >= 2 && h >= 2) {
+          const c = theme();
+          const playing = !audio.paused && !audio.ended;
+          const t = performance.now() / 1000;
+
+          ctx.clearRect(0, 0, w, h);
+
+          if (audio.duration && isFinite(audio.duration) && audio.duration > 0) {
+            ctx.fillStyle = c.prog;
+            ctx.fillRect(0, 0, w * (audio.currentTime / audio.duration), h);
+          }
+
+          
+          let usedLevels = false;
+          if (hasLevels && playing && analyser) {
+            if (audioCtx && audioCtx.state === 'suspended') {
+              audioCtx.resume().catch(() => {});
+            }
+            const levels = readLevels();
+            if (levels) {
+              drawFromLevels(levels, h);
+              usedLevels = true;
+            }
+          }
+          if (!usedLevels) {
+            drawProcedural(playing, h, t);
+          }
+
+          const barW = (w - (BAR_COUNT - 1) * BAR_GAP) / BAR_COUNT;
+          const mid = h / 2;
+          for (let i = 0; i < BAR_COUNT; i++) {
+            const bh = Math.max(2, heights[i]);
+            const x = i * (barW + BAR_GAP);
+            const y = mid - bh / 2;
+            
+            const g = ctx.createLinearGradient(x, y + bh, x, y);
+            if (playing) {
+              g.addColorStop(0, c.bot);
+              g.addColorStop(0.45, c.mid);
+              g.addColorStop(1, c.top);
+            } else {
+              g.addColorStop(0, c.idleBot);
+              g.addColorStop(1, c.idleTop);
+            }
+            ctx.fillStyle = g;
+            fillBar(x, y, Math.max(1, barW), bh, 2);
+          }
+        }
+        requestAnimationFrame(draw);
+      }
+
+      visualizerEl.addEventListener('click', (e) => {
+        if (!audio.duration || !isFinite(audio.duration)) return;
+        const rect = visualizerEl.getBoundingClientRect();
+        const pos = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+        audio.currentTime = pos * audio.duration;
+      });
+
+      if (typeof ResizeObserver !== 'undefined') {
+        new ResizeObserver(resize).observe(visualizerEl);
+      }
+      window.addEventListener('resize', resize);
+      resize();
+      draw();
+    })();
+
+    
+    (() => {
+      const btn       = document.getElementById('patchBtn');
+      const romInput  = document.getElementById('rom');
+      const status    = document.getElementById('status');
+      const bar       = document.getElementById('bar');
+      const stage     = document.getElementById('stage');
+      const pctEl     = document.getElementById('pct');
+      const etaEl     = document.getElementById('eta');
+      const message   = document.getElementById('message');
+      const banner    = document.getElementById('banner');
+
+      if (!btn) return;
+
+      let patchData = null;
+      let progressHistory = [];
+
+      const STAGES = {
+        idle:     { label: 'Select your USA New Super Mario Bros. DS ROM to begin', canPatch: true  },
+        reading:  { label: 'Reading ROM…',                                          canPatch: false },
+        patching: { label: 'Patching — this usually takes 10–20 seconds',           canPatch: false },
+        success:  { label: '✓ ROM patched successfully',                            canPatch: false },
+        error:    { label: '✕ Patching failed',                                     canPatch: true  },
+      };
+
+      function setState(s) {
+        btn.dataset.state = s;
+        status.dataset.state = s;
+        stage.textContent = STAGES[s].label;
+        btn.disabled = !STAGES[s].canPatch;
+
+        if (s === 'idle') {
+          bar.style.width = '0%';
+          pctEl.textContent = '0%';
+          etaEl.textContent = '';
+          message.hidden = true;
+          btn.querySelector('.label').textContent = '⚡ Patch Game';
+        } else if (s === 'success') {
+          message.hidden = false;
+          message.textContent = 'Your download should start automatically.';
+          btn.querySelector('.label').textContent = '✓ Downloaded!';
+          setTimeout(() => setState('idle'), 2200);
+        } else if (s === 'error') {
+          btn.querySelector('.label').textContent = 'Try Again';
+        }
+      }
+
+      function setProgress(p) {
+        const now = performance.now();
+        progressHistory.push({ p, t: now });
+        if (progressHistory.length > 4) progressHistory.shift();
+        bar.style.width = (p * 100).toFixed(1) + '%';
+        pctEl.textContent = Math.round(p * 100) + '%';
+
+        if (progressHistory.length >= 2 && p > 0.01 && p < 1) {
+          const first = progressHistory[0];
+          const last  = progressHistory[progressHistory.length - 1];
+          const dp = last.p - first.p;
+          const dt = (last.t - first.t) / 1000;
+          if (dp > 0.001 && dt > 0.05) {
+            const remaining = (1 - p) * (dt / dp);
+            etaEl.textContent = '≈ ' + formatTime(remaining) + ' left';
+          }
+        } else if (p >= 1) {
+          etaEl.textContent = '';
+        }
+      }
+
+      function formatTime(seconds) {
+        if (!isFinite(seconds) || seconds < 0) return '';
+        if (seconds < 60) return Math.max(1, Math.round(seconds)) + 's';
+        const m = Math.floor(seconds / 60);
+        const s = Math.round(seconds % 60);
+        return m + 'm ' + s + 's';
+      }
+
+      
+      setState('idle');
+      fetch('game.xdelta')
+        .then(r => {
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          return r.arrayBuffer();
+        })
+        .then(data => { patchData = data; })
+        .catch(err => {
+          banner.dataset.visible = 'true';
+          setState('error');
+          message.hidden = false;
+          message.textContent = 'Patch data could not be downloaded from this server.';
+          btn.disabled = true;
+          console.error('Failed to load game.xdelta:', err);
+        });
+
+      btn.addEventListener('click', () => {
+        if (btn.disabled) return;
+        if (status.dataset.state === 'success' || status.dataset.state === 'error') {
+          setState('idle');
+        }
+        romInput.value = '';
+        romInput.click();
+      });
+
+      romInput.addEventListener('change', e => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (!patchData) {
+          banner.dataset.visible = 'true';
+          setState('error');
+          message.hidden = false;
+          message.textContent = "Patch data hasn't finished loading. Please wait a moment and try again.";
+          return;
+        }
+
+        const MB = 1024 * 1024;
+        
+        if (file.size < 300 * MB || file.size > 500 * MB) {
+          setState('error');
+          message.hidden = false;
+          message.textContent = "That doesn't look like a New Super Mario Bros. DS ROM. Expected ~367 MB; got " +
+            (file.size / MB).toFixed(1) + ' MB.';
+          return;
+        }
+
+        setState('reading');
+        progressHistory = [];
+
+        const reader = new FileReader();
+        reader.onload = () => {
+          const romData = reader.result;
+
+          setTimeout(() => {
+            setState('patching');
+            setProgress(0);
+
+            applyPatchAsync(romData, patchData, {
+              ignoreChecksums: false,
+
+              onprogress: (p) => setProgress(p),
+
+              onerror: (err) => {
+                setState('error');
+                message.hidden = false;
+                message.textContent = String(err) || 'An unknown error occurred while patching.';
+              },
+
+              onpatchend: (out) => {
+                setProgress(1);
+                setState('success');
+
+                const blob = new Blob([out], { type: 'application/octet-stream' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'Sakura Super Mario Bros. Demo.nds';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                setTimeout(() => URL.revokeObjectURL(url), 1500);
+              }
+            });
+          }, 250);
+        };
+
+        reader.onerror = () => {
+          setState('error');
+          message.hidden = false;
+          message.textContent = 'Could not read that file. Please try again.';
+        };
+
+        reader.readAsArrayBuffer(file);
+      });
+    })();
   </script>
 
 </body>
