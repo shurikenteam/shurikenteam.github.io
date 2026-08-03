@@ -1632,29 +1632,42 @@
         const bins = levels.freq.length;
         const bass = levels.bass;
         const loud = levels.loud;
+        const trebleEnd = Math.max(1, Math.floor(bins * 0.55));
         for (let i = 0; i < BAR_COUNT; i++) {
           const ft = i / (BAR_COUNT - 1);
           const idx = Math.min(bins - 1, Math.floor(ft * bins * 0.95));
           let sum = 0, n = 0;
-          for (let k = -2; k <= 2; k++) {
+          for (let k = -1; k <= 1; k++) {
             const j = idx + k;
             if (j >= 0 && j < bins) { sum += levels.freq[j]; n++; }
           }
           const freq = (sum / Math.max(1, n)) / 255;
 
-          const bassWeight = Math.max(0, 1 - ft) * 0.9;
-          const volumeWeight = 0.5;
-          const mixed = freq * 1.15 + loud * volumeWeight + bass * bassWeight;
-          const boosted = Math.min(1.25, Math.pow(Math.max(0, mixed), 0.55) * 2.1);
+          const treble = idx >= trebleEnd
+            ? (sum / Math.max(1, n)) / 255
+            : 0;
 
-          const env = 0.7 + 0.3 * Math.sin((i / (BAR_COUNT - 1)) * Math.PI);
+          const bassWeight = Math.max(0, 1 - ft) * 1.0;
+          const volumeWeight = 0.45;
+          const trebleWeight = ft > 0.6 ? (ft - 0.6) * 2.5 : 0;
+          const mixed = freq * 1.1 + loud * volumeWeight + bass * bassWeight + treble * trebleWeight;
+          const boosted = Math.min(1.3, Math.pow(Math.max(0, mixed), 0.5) * 2.3);
+
+          let env;
+          if (ft < 0.55) {
+            const t = ft / 0.55;
+            env = 0.55 + 0.45 * t * t;
+          } else {
+            const t = (ft - 0.55) / 0.45;
+            env = 0.7 + 0.3 * t;
+          }
           const target = Math.max(3, boosted * h * 0.94 * env);
 
           const prev = heights[i];
           if (target > prev) {
-            heights[i] += (target - prev) * 0.55;
+            heights[i] += (target - prev) * 0.65;
           } else {
-            heights[i] += (target - prev) * 0.22;
+            heights[i] += (target - prev) * 0.18;
           }
         }
       }
