@@ -1500,7 +1500,7 @@
           audioCtx = new AC();
           analyser = audioCtx.createAnalyser();
           analyser.fftSize = 1024;
-          analyser.smoothingTimeConstant = 0.65;
+          analyser.smoothingTimeConstant = 0.8;
           analyser.minDecibels = -90;
           analyser.maxDecibels = -10;
           timeData = new Uint8Array(analyser.fftSize);
@@ -1524,29 +1524,46 @@
         analyser.getByteTimeDomainData(timeData);
         analyser.getByteFrequencyData(freqData);
 
-        
+        const sampleRate = audioCtx ? audioCtx.sampleRate : 44100;
+        const nyquist = sampleRate / 2;
+        const n = timeData.length;
+        const bins = freqData.length;
+
         let sum = 0;
-        for (let i = 0; i < timeData.length; i++) {
+        for (let i = 0; i < n; i++) {
           const v = (timeData[i] - 128) / 128;
           sum += v * v;
         }
-        const loud = Math.min(1, Math.sqrt(sum / timeData.length) * 2.6);
+        const rms = Math.sqrt(sum / n);
+        const loud = Math.min(1, Math.pow(rms, 0.85) * 1.25);
 
-        
         let total = 0, peak = 0;
-        for (let i = 0; i < freqData.length; i++) {
+        for (let i = 0; i < bins; i++) {
           total += freqData[i];
           if (freqData[i] > peak) peak = freqData[i];
         }
-        const avg = total / freqData.length;
+        const avg = total / bins;
 
-        
-        const bassEnd = Math.floor(freqData.length * 0.12);
+        const bassEnd = Math.floor(bins * 0.08);
         let bassSum = 0;
         for (let i = 0; i < bassEnd; i++) bassSum += freqData[i];
         const bass = bassSum / (bassEnd * 255);
 
-        return { loud: loud, peak: peak / 255, avg: avg / 255, bass: bass, freq: freqData };
+        let bestIdx = 0, bestVal = 0;
+        for (let i = 2; i < bins - 2; i++) {
+          if (freqData[i] > bestVal) { bestVal = freqData[i]; bestIdx = i; }
+        }
+        const peakHz = bestIdx * nyquist / bins;
+
+        let weightedSum = 0, weightTotal = 0;
+        for (let i = 1; i < bins; i++) {
+          const w = freqData[i] / 255;
+          weightedSum += (i * nyquist / bins) * w;
+          weightTotal += w;
+        }
+        const centroidHz = weightTotal > 0 ? weightedSum / weightTotal : 0;
+
+        return { loud, peak: peak / 255, avg: avg / 255, bass, freq: freqData, peakHz, centroidHz };
       }
 
       if (!canvas || !visualizerEl) return;
@@ -1613,13 +1630,11 @@
 
       function drawFromLevels(levels, h) {
         const bins = levels.freq.length;
-        const bass = levels.bass;     
-        const loud = levels.loud;     
+        const bass = levels.bass;
+        const loud = levels.loud;
         for (let i = 0; i < BAR_COUNT; i++) {
-          
-          
           const ft = i / (BAR_COUNT - 1);
-          const idx = Math.min(bins - 1, Math.floor(Math.pow(ft, 0.55) * bins * 0.95));
+          const idx = Math.min(bins - 1, Math.floor(Math.pow(ft, 0.6) * bins * 0.95));
           let sum = 0, n = 0;
           for (let k = -2; k <= 2; k++) {
             const j = idx + k;
@@ -1627,19 +1642,16 @@
           }
           const freq = (sum / Math.max(1, n)) / 255;
 
-          
-          
-          
-          const bassWeight = Math.max(0, 1 - ft) * 0.7;
-          const volumeWeight = 0.55;
-          const mixed = freq * 0.9 + loud * volumeWeight + bass * bassWeight;
-          const boosted = Math.min(1.15, Math.pow(Math.max(0, mixed), 0.55) * 1.9);
+          const bassWeight = Math.max(0, 1 - ft) * 0.5;
+          const volumeWeight = 0.4;
+          const mixed = freq * 0.85 + loud * volumeWeight + bass * bassWeight;
+          const boosted = Math.min(1.05, Math.pow(Math.max(0, mixed), 0.75) * 1.35);
 
           
-          
           const env = 0.65 + 0.35 * Math.sin((i / (BAR_COUNT - 1)) * Math.PI);
-          const target = Math.max(3, boosted * h * 0.92 * env);
-          heights[i] += (target - heights[i]) * 0.45;
+          const env = 0.72 + 0.28 * Math.sin((i / (BAR_COUNT - 1)) * Math.PI);
+          const target = Math.max(3, boosted * h * 0.88 * env);
+          heights[i] += (target - heights[i]) * 0.28;
         }
       }
 
