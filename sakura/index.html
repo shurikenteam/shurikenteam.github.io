@@ -29,7 +29,6 @@
       --bg-stripe-2: var(--pink-primary);
     }
 
-    
     @media (prefers-color-scheme: dark) {
       :root {
         --pink-primary: #3B1B47;
@@ -137,7 +136,6 @@
       line-height: 1.6;
     }
 
-    
     .bg-pattern {
       position: fixed;
       top: 0;
@@ -194,7 +192,6 @@
       to { transform: translateX(-50%); }
     }
 
-    
     nav {
       position: fixed;
       top: 0;
@@ -280,7 +277,6 @@
       cursor: pointer;
     }
 
-    
     .hero {
       min-height: 100vh;
       display: flex;
@@ -422,7 +418,6 @@
       color: #888;
     }
 
-    
     section {
       position: relative;
       z-index: 1;
@@ -449,7 +444,6 @@
       margin-bottom: 50px;
     }
 
-    
     .features-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -505,7 +499,6 @@
       line-height: 1.6;
     }
 
-    
     .screenshots-section {
       background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.2), transparent);
     }
@@ -577,7 +570,6 @@
       transform: translateY(0);
     }
 
-    
     .lightbox {
       position: fixed;
       inset: 0;
@@ -619,7 +611,6 @@
       transform: scale(1.1);
     }
 
-    
     .music-section {
       padding: 40px 20px;
     }
@@ -689,6 +680,7 @@
       transition: width 0.1s linear;
     }
 
+
     .audio-visualizer {
       flex: 1;
       height: 40px;
@@ -734,7 +726,7 @@
       fill: currentColor;
     }
 
-    
+    /* ─── Download Section ─── */
     .download-section {
       text-align: center;
     }
@@ -778,7 +770,6 @@
       font-size: 14px;
     }
 
-    
     footer {
       text-align: center;
       padding: 40px 20px;
@@ -794,7 +785,6 @@
       font-weight: 600;
     }
 
-    
     .petal {
       position: fixed;
       background-color: rgba(255, 255, 255, 0.85);
@@ -819,7 +809,6 @@
       }
     }
 
-    
     .reveal {
       opacity: 0;
       transform: translateY(40px);
@@ -831,7 +820,6 @@
       transform: translateY(0);
     }
 
-    
     @media (max-width: 768px) {
       .nav-links {
         display: none;
@@ -911,7 +899,6 @@
       }
     }
 
-    
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: 0.01ms !important;
@@ -922,7 +909,6 @@
       }
     }
 
-    
     .patch-card {
       margin-top: 32px;
       position: relative;
@@ -1005,7 +991,6 @@
       border-radius: 2px;
     }
 
-    
     .banner {
       display: none;
       margin: 0 auto 20px;
@@ -1021,7 +1006,6 @@
 
     .banner[data-visible="true"] { display: block; }
 
-    
     .status {
       width: 100%;
       max-width: 520px;
@@ -1333,7 +1317,6 @@
   </footer>
 
   <script>
-    
     function createPetal() {
       const petal = document.createElement('div');
       petal.classList.add('petal');
@@ -1343,7 +1326,6 @@
       petal.style.height = size + 'px';
       petal.style.left = Math.random() * 100 + 'vw';
 
-      
       const duration = Math.random() * 4 + 5;
       const sway = (Math.random() - 0.5) * 300;
       const rotation = Math.random() * 1080 + 360;
@@ -1357,19 +1339,16 @@
       document.body.appendChild(petal);
     }
 
-    
     for (let i = 0; i < 80; i++) {
       setTimeout(createPetal, Math.random() * 6000);
     }
     setInterval(createPetal, 200);
 
-    
     const navbar = document.getElementById('navbar');
     window.addEventListener('scroll', () => {
       navbar.classList.toggle('scrolled', window.scrollY > 50);
     });
 
-    
     const revealElements = document.querySelectorAll('.reveal, .feature-card, .gallery-item');
     const revealObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -1382,7 +1361,6 @@
 
     revealElements.forEach(el => revealObserver.observe(el));
 
-    
     function openLightbox(src) {
       const lightbox = document.getElementById('lightbox');
       const img = document.getElementById('lightbox-img');
@@ -1397,12 +1375,10 @@
       document.body.style.overflow = '';
     }
 
-    
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') closeLightbox();
     });
 
-    
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function(e) {
         e.preventDefault();
@@ -1415,7 +1391,6 @@
       });
     });
 
-    
     (() => {
       const audio = document.getElementById('audioElement');
       const playBtn = document.getElementById('audioPlayBtn');
@@ -1435,11 +1410,11 @@
       let freqData = null;
       let hasLevels = false;
       let levelTried = false;
+      let signalLive = false;
 
       const BAR_COUNT = 42;
       const BAR_GAP = 2;
       const heights = new Array(BAR_COUNT).fill(4);
-      const peaks = new Array(BAR_COUNT).fill(0);
       const phases = new Array(BAR_COUNT).fill(0).map(() => Math.random() * Math.PI * 2);
       const speeds = new Array(BAR_COUNT).fill(0).map(() => 1 + Math.random() * 1.5);
 
@@ -1452,15 +1427,13 @@
       playBtn.addEventListener('click', async () => {
         if (audio.paused) {
           try {
-            
-            
+            await audio.play();
+            playIcon.style.display = 'none';
+            pauseIcon.style.display = 'block';
             tryAttachLevels();
             if (audioCtx && audioCtx.state === 'suspended') {
               await audioCtx.resume().catch(() => {});
             }
-            await audio.play();
-            playIcon.style.display = 'none';
-            pauseIcon.style.display = 'block';
           } catch (err) {
             console.error('Play failed:', err);
           }
@@ -1495,24 +1468,21 @@
         if (levelTried) return;
         levelTried = true;
         try {
+          const capture = audio.captureStream || audio.mozCaptureStream;
+          if (typeof capture !== 'function') return;
           const AC = window.AudioContext || window.webkitAudioContext;
           if (!AC) return;
 
           audioCtx = new AC();
           analyser = audioCtx.createAnalyser();
-          analyser.fftSize = 1024;
-          analyser.smoothingTimeConstant = 0.55;
-          analyser.minDecibels = -90;
-          analyser.maxDecibels = -10;
+          analyser.fftSize = 512;
+          analyser.smoothingTimeConstant = 0.6;
           timeData = new Uint8Array(analyser.fftSize);
           freqData = new Uint8Array(analyser.frequencyBinCount);
 
-          
-          
-          
-          const src = audioCtx.createMediaElementSource(audio);
+          const stream = capture.call(audio);
+          const src = audioCtx.createMediaStreamSource(stream);
           src.connect(analyser);
-          analyser.connect(audioCtx.destination);
           hasLevels = true;
         } catch (err) {
           console.warn('Levels unavailable:', err);
@@ -1525,46 +1495,19 @@
         analyser.getByteTimeDomainData(timeData);
         analyser.getByteFrequencyData(freqData);
 
-        const sampleRate = audioCtx ? audioCtx.sampleRate : 44100;
-        const nyquist = sampleRate / 2;
-        const n = timeData.length;
-        const bins = freqData.length;
-
         let sum = 0;
-        for (let i = 0; i < n; i++) {
+        for (let i = 0; i < timeData.length; i++) {
           const v = (timeData[i] - 128) / 128;
           sum += v * v;
         }
-        const rms = Math.sqrt(sum / n);
-        const loud = Math.min(1, Math.pow(rms, 0.85) * 1.25);
+        const loud = Math.min(1, Math.sqrt(sum / timeData.length) * 3.5);
 
-        let total = 0, peak = 0;
-        for (let i = 0; i < bins; i++) {
-          total += freqData[i];
+        let peak = 0;
+        for (let i = 0; i < freqData.length; i++) {
           if (freqData[i] > peak) peak = freqData[i];
         }
-        const avg = total / bins;
 
-        const bassEnd = Math.floor(bins * 0.08);
-        let bassSum = 0;
-        for (let i = 0; i < bassEnd; i++) bassSum += freqData[i];
-        const bass = bassSum / (bassEnd * 255);
-
-        let bestIdx = 0, bestVal = 0;
-        for (let i = 2; i < bins - 2; i++) {
-          if (freqData[i] > bestVal) { bestVal = freqData[i]; bestIdx = i; }
-        }
-        const peakHz = bestIdx * nyquist / bins;
-
-        let weightedSum = 0, weightTotal = 0;
-        for (let i = 1; i < bins; i++) {
-          const w = freqData[i] / 255;
-          weightedSum += (i * nyquist / bins) * w;
-          weightTotal += w;
-        }
-        const centroidHz = weightTotal > 0 ? weightedSum / weightTotal : 0;
-
-        return { loud, peak: peak / 255, avg: avg / 255, bass, freq: freqData, peakHz, centroidHz };
+        return { loud: loud, peak: peak, freq: freqData };
       }
 
       if (!canvas || !visualizerEl) return;
@@ -1626,40 +1569,25 @@
             target = 5 + Math.sin(t * 1.1 + phases[i]) * 3.5;
           }
           heights[i] += (target - heights[i]) * (playing ? 0.25 : 0.1);
-          peaks[i] = Math.max(0, peaks[i] - 2);
         }
       }
 
       function drawFromLevels(levels, h) {
         const bins = levels.freq.length;
-        const bass = levels.bass;
         for (let i = 0; i < BAR_COUNT; i++) {
-          const ft = i / (BAR_COUNT - 1);
-          const idx = Math.min(bins - 1, Math.floor(ft * bins * 0.92));
+          const ft = i / BAR_COUNT;
+          const idx = Math.min(bins - 1, Math.floor(Math.pow(ft, 0.75) * bins * 0.9));
           let sum = 0, n = 0;
-          for (let k = -1; k <= 1; k++) {
+          for (let k = -2; k <= 2; k++) {
             const j = idx + k;
             if (j >= 0 && j < bins) { sum += levels.freq[j]; n++; }
           }
-          let v = (sum / Math.max(1, n)) / 255;
-
-          if (ft < 0.25) v += bass * (1 - ft / 0.25) * 0.6;
-
-          v = Math.min(1, Math.pow(v, 0.45) * 2.4);
-
-          const target = Math.max(3, v * h * 0.94);
-
-          if (target > heights[i]) {
-            heights[i] += (target - heights[i]) * 0.7;
-          } else {
-            heights[i] += (target - heights[i]) * 0.16;
-          }
-
-          if (target > peaks[i]) {
-            peaks[i] = target;
-          } else {
-            peaks[i] = Math.max(0, peaks[i] - 1.2);
-          }
+          const freq = (sum / Math.max(1, n)) / 255;
+          const mixed = freq * 0.5 + levels.loud * 0.5;
+          const boosted = Math.min(1, Math.pow(mixed, 0.65) * 1.6);
+          const env = 0.5 + 0.5 * Math.sin((i / (BAR_COUNT - 1)) * Math.PI);
+          const target = Math.max(3, boosted * h * 0.92 * env);
+          heights[i] += (target - heights[i]) * 0.4;
         }
       }
 
@@ -1678,14 +1606,17 @@
             ctx.fillRect(0, 0, w * (audio.currentTime / audio.duration), h);
           }
 
-          
+          // Prefer real levels only if we actually receive signal
           let usedLevels = false;
           if (hasLevels && playing && analyser) {
             if (audioCtx && audioCtx.state === 'suspended') {
               audioCtx.resume().catch(() => {});
             }
             const levels = readLevels();
-            if (levels) {
+            if (levels && (levels.loud > 0.015 || levels.peak > 8)) {
+              signalLive = true;
+            }
+            if (signalLive && levels) {
               drawFromLevels(levels, h);
               usedLevels = true;
             }
@@ -1700,7 +1631,6 @@
             const bh = Math.max(2, heights[i]);
             const x = i * (barW + BAR_GAP);
             const y = mid - bh / 2;
-
             const g = ctx.createLinearGradient(x, y + bh, x, y);
             if (playing) {
               g.addColorStop(0, c.bot);
@@ -1712,13 +1642,6 @@
             }
             ctx.fillStyle = g;
             fillBar(x, y, Math.max(1, barW), bh, 2);
-
-            if (playing && peaks[i] > 4) {
-              const ph = Math.max(2, peaks[i]);
-              const py = mid - ph / 2;
-              ctx.fillStyle = c.top;
-              fillBar(x, py - 3, Math.max(1, barW), 2, 1);
-            }
           }
         }
         requestAnimationFrame(draw);
@@ -1739,7 +1662,6 @@
       draw();
     })();
 
-    
     (() => {
       const btn       = document.getElementById('patchBtn');
       const romInput  = document.getElementById('rom');
@@ -1815,7 +1737,6 @@
         return m + 'm ' + s + 's';
       }
 
-      
       setState('idle');
       fetch('game.xdelta')
         .then(r => {
@@ -1854,7 +1775,6 @@
         }
 
         const MB = 1024 * 1024;
-        
         if (file.size < 300 * MB || file.size > 500 * MB) {
           setState('error');
           message.hidden = false;
